@@ -1,8 +1,0 @@
-[
-  {"id":"chem_001","subject":"化学基礎","category":"物質の構成","difficulty":1,
-   "question":"原子核に含まれ、電荷を持たない粒子はどれか。","choice_1":"中性子","choice_2":"陽子","choice_3":"電子","choice_4":"中間子",
-   "explanation":"原子核は陽子（正電荷）と中性子（電荷なし）で構成されます。"},
-  {"id":"bio_001","subject":"生物基礎","category":"細胞","difficulty":1,
-   "question":"植物細胞に存在し、動物細胞に存在しない構造はどれか。","choice_1":"細胞壁","choice_2":"核","choice_3":"ミトコンドリア","choice_4":"細胞膜",
-   "explanation":"細胞壁は植物細胞に特有です。"}
-]
