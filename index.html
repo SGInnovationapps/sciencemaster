@@ -21,7 +21,7 @@
     --bg:#F4F2EC; --surface:#FFFFFF; --ink:#23241F; --muted:#6E6F66; --hint:#9A9B90;
     --line:rgba(35,36,31,.12); --line2:rgba(35,36,31,.22);
     --green:#1D9E75; --green-d:#0F6E56; --green-dd:#04342C; --green-l:#E1F5EE; --green-m:#5DCAA5;
-    --blue:#185FA5; --blue-d:#042C53; --blue-l:#E6F1FB;
+    --blue:#185FA5; --blue-d:#11487E; --blue-dd:#042C53; --blue-l:#E6F1FB; --blue-m:#7FB0DE;
     --pink:#993556; --pink-d:#4B1528; --pink-l:#FBEAF0; --pink-m:#ED93B1;
     --amber:#BA7517; --amber-d:#633806; --amber-dd:#412402; --amber-l:#FAEEDA; --amber-m:#FAC775;
     --red:#E24B4A; --red-d:#A32D2D; --red-dd:#501313; --red-l:#FCEBEB;
@@ -70,8 +70,8 @@
     color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;
     transition:background .15s,color .15s;}
   .subjtab i{font-size:17px;}
-  .subjtab.chem.active{background:var(--green-l);color:var(--green-d);}
-  .subjtab.bio.active{background:var(--pink-l);color:var(--pink);}
+  .subjtab.chem.active{background:var(--blue-l);color:var(--blue-d);}
+  .subjtab.bio.active{background:var(--green-l);color:var(--green-d);}
 
   .card{background:var(--surface);border:.5px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow);}
@@ -115,25 +115,25 @@
 
   /* quest category select */
   .subject-h{font-size:14px;font-weight:600;margin:18px 2px 10px;display:flex;align-items:center;gap:7px;}
-  .subject-h.chem{color:var(--green-d);} .subject-h.bio{color:var(--pink);}
+  .subject-h.chem{color:var(--blue-d);} .subject-h.bio{color:var(--green-d);}
   .catcard{border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;width:100%;text-align:left;
     display:flex;align-items:center;gap:13px;transition:transform .1s;border:.5px solid transparent;}
   .catcard:active{transform:scale(.985);}
-  .catcard.chem{background:var(--green-l);} .catcard.bio{background:var(--pink-l);}
+  .catcard.chem{background:var(--blue-l);} .catcard.bio{background:var(--green-l);}
   .catcard .cic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
     font-size:21px;flex-shrink:0;}
-  .catcard.chem .cic{background:var(--green-m);color:var(--green-dd);}
-  .catcard.bio .cic{background:var(--pink-m);color:var(--pink-d);}
+  .catcard.chem .cic{background:var(--blue-m);color:var(--blue-dd);}
+  .catcard.bio .cic{background:var(--green-m);color:var(--green-dd);}
   .catcard .cbody{flex:1;min-width:0;}
   .catcard .cname{font-size:15px;font-weight:600;margin:0;}
-  .catcard.chem .cname{color:var(--green-dd);} .catcard.bio .cname{color:var(--pink-d);}
+  .catcard.chem .cname{color:var(--blue-dd);} .catcard.bio .cname{color:var(--green-dd);}
   .catcard .cmeta{font-size:12px;margin:3px 0 0;display:flex;align-items:center;gap:8px;}
-  .catcard.chem .cmeta{color:var(--green-d);} .catcard.bio .cmeta{color:var(--pink);}
+  .catcard.chem .cmeta{color:var(--blue-d);} .catcard.bio .cmeta{color:var(--green-d);}
   .catcard .cprog{height:5px;border-radius:3px;margin-top:7px;overflow:hidden;background:rgba(35,36,31,.1);}
   .catcard .cprog i{display:block;height:100%;border-radius:3px;}
-  .catcard.chem .cprog i{background:var(--green);} .catcard.bio .cprog i{background:var(--pink);}
+  .catcard.chem .cprog i{background:var(--blue);} .catcard.bio .cprog i{background:var(--green);}
   .catcard .cchev{font-size:20px;flex-shrink:0;}
-  .catcard.chem .cchev{color:var(--green-d);} .catcard.bio .cchev{color:var(--pink);}
+  .catcard.chem .cchev{color:var(--blue-d);} .catcard.bio .cchev{color:var(--green-d);}
   .catcard .clear-tag{font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:3px;}
 
   /* quest count select */
@@ -232,14 +232,34 @@
 <body>
 <div id="app">
 
+  <!-- ============ ONBOARDING (first run) ============ -->
+  <section id="onboard" class="screen center">
+    <div class="medal" style="margin-top:32px">
+      <svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="ようこそ">
+        <circle cx="60" cy="60" r="52" fill="var(--blue-l)"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--blue)" stroke-width="3"/>
+        <circle cx="60" cy="60" r="40" fill="var(--blue-m)"/>
+      </svg>
+      <div class="ic" style="color:var(--blue-dd)"><i class="ti ti-flask"></i></div>
+    </div>
+    <p class="title-xl">理科基礎マスターへようこそ</p>
+    <p class="lead">毎日コツコツ、化学基礎と生物基礎をマスターしよう。<br>まずはニックネームを教えてください。</p>
+    <input id="nameInput" type="text" maxlength="12" placeholder="ニックネーム（例：はると）"
+      style="width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:var(--radius);
+      padding:14px 16px;font-size:16px;font-family:inherit;margin-bottom:8px;text-align:center;"
+      autocomplete="off">
+    <p id="nameHint" class="sub" style="min-height:18px;margin:0 0 14px;color:var(--red-d)"></p>
+    <button class="btn green" onclick="submitName()">はじめる <i class="ti ti-arrow-right"></i></button>
+  </section>
+
   <!-- ============ HOME ============ -->
-  <section id="home" class="screen active">
+  <section id="home" class="screen">
     <div class="topbar">
       <div>
-        <p class="sub">おかえり、<span id="userName">ジュン</span>さん</p>
+        <p class="sub">高校 化学基礎・生物基礎</p>
         <h1>理科基礎マスター</h1>
       </div>
-      <div class="avatar" id="userInitial">J</div>
+      <div class="avatar" id="userInitial" onclick="editName()" title="ニックネームを変更">J</div>
     </div>
 
     <div class="streak">
@@ -307,7 +327,7 @@
         <p class="sub" style="display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-map-2" style="color:var(--green-d)"></i>単元クエスト</p>
         <h1 style="font-size:17px" id="catsTitle">単元を選ぶ</h1>
       </div>
-      <span style="width:22px"></span>
+      <button class="close" onclick="goHome()" aria-label="ホームに戻る" style="font-size:22px;color:var(--muted)"><i class="ti ti-home"></i></button>
     </div>
     <div id="catSubjects"></div>
   </section>
@@ -320,7 +340,7 @@
         <p class="sub" style="display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-map-2" style="color:var(--green-d)"></i>単元クエスト</p>
         <h1 style="font-size:17px" id="qcountTitle">出題数を選ぶ</h1>
       </div>
-      <span style="width:22px"></span>
+      <button class="close" onclick="goHome()" aria-label="ホームに戻る" style="font-size:22px;color:var(--muted)"><i class="ti ti-home"></i></button>
     </div>
     <div class="card cnt-summary" id="qcountSummary"></div>
     <p class="section-h">何問挑戦する？</p>
@@ -454,7 +474,7 @@ let session = null;            // 現在のセッション
 /* ---------- 永続化 ---------- */
 function defaultState(){
   return {
-    profile:{name:"ジュン", lastLogin:null, streak:0},
+    profile:{name:"", lastLogin:null, streak:0},
     logs:[],                          // {qid,correct,ts,ms}
     wrong:{},                         // qid -> {wrong_count, review_status}
     pointsToday:0, todayKey:null,
@@ -527,8 +547,7 @@ function goHome(){ session=null; clearInterval(timerInt); renderHome(); show("ho
 /* ---------- ホーム描画 ---------- */
 function renderHome(){
   const p = state.profile;
-  document.getElementById("userName").textContent = p.name;
-  document.getElementById("userInitial").textContent = (p.name[0]||"J").toUpperCase();
+  document.getElementById("userInitial").textContent = (p.name[0]||"理").toUpperCase();
   document.getElementById("streakDays").textContent = p.streak;
 
   // streak dots (1週間サイクル)
@@ -562,12 +581,12 @@ function renderHome(){
   // mastery（選択中の科目の単元のみ。割合＝単元の全問に対する正解数）
   const ml = document.getElementById("masteryList"); ml.innerHTML="";
   const isChem = state.subject==="化学基礎";
-  const accent = isChem ? "var(--green)" : "var(--pink)";
+  const accent = isChem ? "var(--blue)" : "var(--green)";
   const icon = isChem ? "ti-flask" : "ti-dna";
   const rows = masteryBySubjectCat().filter(r=>r.subject===state.subject);
   rows.forEach(r=>{
     const pct = r.total ? Math.round(r.correctQ/r.total*100) : 0;
-    const fill = pct>=80 ? accent : (isChem?"var(--green-m)":"var(--pink-m)");
+    const fill = pct>=80 ? accent : (isChem?"var(--blue-m)":"var(--green-m)");
     const div = document.createElement("div"); div.className="mrow";
     div.innerHTML =
       `<div class="mtop"><span class="mname"><i class="ti ${icon}" style="color:${accent}"></i>${r.category}</span>`+
@@ -586,12 +605,12 @@ function setSubject(subj){
 }
 
 /* ---------- クイズ開始 ---------- */
-const CHIP_COLORS = {
-  "物質の構成":["var(--green-l)","var(--green-d)"],
-  "化学反応":["var(--green-l)","var(--green-d)"],
-  "細胞":["var(--pink-l)","var(--pink)"],
-  "体内環境":["var(--pink-l)","var(--pink)"]
-};
+// 科目に応じたチップ色（化学=青、生物=緑、その他=ニュートラル）
+function subjectChipColors(subject){
+  if(subject==="化学基礎") return ["var(--blue-l)","var(--blue-d)"];
+  if(subject==="生物基礎") return ["var(--green-l)","var(--green-d)"];
+  return ["var(--line)","var(--muted)"];
+}
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 function startQuiz(mode, category, count){
@@ -682,13 +701,18 @@ function renderQuestCount(category, total){
   const subject = state.subject || "化学基礎";
   document.getElementById("qcountTitle").textContent = `${category}・出題数を選ぶ`;
 
-  // サマリー
+  // サマリー（科目色：化学=青、生物=緑）
+  const isChem = subject==="化学基礎";
+  const cBg = isChem ? "var(--blue-m)" : "var(--green-m)";
+  const cFg = isChem ? "var(--blue-dd)" : "var(--green-dd)";
   const sum = document.getElementById("qcountSummary");
   sum.innerHTML =
-    `<span class="cic"><i class="ti ti-${subject==="化学基礎"?"flask":"dna"}"></i></span>`+
+    `<span class="cic" style="background:${cBg};color:${cFg}"><i class="ti ti-${isChem?"flask":"dna"}"></i></span>`+
     `<div><p class="cname">${category}</p><p class="cmeta">${subject}・全${total}問</p></div>`;
 
   // 候補：5/10/20問 と「全問」。全問数を超える固定値は無効化。
+  const optBg = isChem ? "var(--blue-l)" : "var(--green-l)";
+  const optFg = isChem ? "var(--blue-d)" : "var(--green-d)";
   const presets = [5, 10, 20];
   const wrap = document.getElementById("qcountOptions"); wrap.innerHTML="";
   presets.forEach(n=>{
@@ -697,10 +721,10 @@ function renderQuestCount(category, total){
     b.className="cntopt"; if(!enough) b.disabled=true;
     if(enough) b.onclick=()=>startQuiz("quest", category, n);
     b.innerHTML =
-      `<span class="nic">${n}</span>`+
+      `<span class="nic" style="background:${optBg};color:${optFg}">${n}</span>`+
       `<span class="nbody"><span class="nname">${n}問に挑戦</span>`+
       `<span class="ndsc">${enough?`${category}からランダムに${n}問`:`問題が足りません（全${total}問）`}</span></span>`+
-      (enough?`<i class="ti ti-chevron-right nchev"></i>`:``);
+      (enough?`<i class="ti ti-chevron-right nchev" style="color:${optFg}"></i>`:``);
     wrap.appendChild(b);
   });
   // 全問（プリセットと重複する数なら出さない）
@@ -709,10 +733,10 @@ function renderQuestCount(category, total){
     b.className="cntopt";
     b.onclick=()=>startQuiz("quest", category, total);
     b.innerHTML =
-      `<span class="nic"><i class="ti ti-infinity"></i></span>`+
+      `<span class="nic" style="background:${optBg};color:${optFg}"><i class="ti ti-infinity"></i></span>`+
       `<span class="nbody"><span class="nname">全問に挑戦</span>`+
       `<span class="ndsc">この単元の${total}問すべて</span></span>`+
-      `<i class="ti ti-chevron-right nchev"></i>`;
+      `<i class="ti ti-chevron-right nchev" style="color:${optFg}"></i>`;
     wrap.appendChild(b);
   }
 }
@@ -729,7 +753,7 @@ function renderQuestion(){
   document.getElementById("qCount").textContent = `${session.idx+1} / ${session.total}`;
   const chip = document.getElementById("qChip");
   chip.textContent = q.subject+"・"+q.category;
-  const cc = CHIP_COLORS[q.category]||["var(--green-l)","var(--green-d)"];
+  const cc = subjectChipColors(q.subject);
   chip.style.background=cc[0]; chip.style.color=cc[1];
 
   document.getElementById("qText").textContent = q.question;
@@ -865,9 +889,8 @@ function endSession(){
 
 /* ---------- 中断確認 ---------- */
 function confirmQuit(){
-  if(!confirm("クイズをやめますか？")) return;
-  if(session && session.mode==="quest"){ session=null; clearInterval(timerInt); openQuestCategories(); }
-  else goHome();
+  if(!confirm("クイズを中断してホームに戻りますか？\n（この回の進捗は保存されません）")) return;
+  goHome();
 }
 
 /* ---------- データ読み込み ---------- */
@@ -895,11 +918,46 @@ function normalizeQuestion(q){
   };
 }
 
+/* ---------- ニックネーム登録 ---------- */
+function submitName(){
+  const input = document.getElementById("nameInput");
+  const name = (input.value||"").trim();
+  const hint = document.getElementById("nameHint");
+  if(!name){ hint.textContent="ニックネームを入力してください。"; input.focus(); return; }
+  state.profile.name = name;
+  saveState();
+  renderHome();
+  show("home");
+}
+function editName(){
+  const cur = state.profile.name || "";
+  const v = prompt("ニックネームを変更", cur);
+  if(v===null) return;                 // キャンセル
+  const name = v.trim();
+  if(!name) return;                    // 空は無視
+  state.profile.name = name.slice(0,12);
+  saveState();
+  renderHome();
+}
+
 /* ---------- 起動 ---------- */
 (async function init(){
   await loadQuestions();
   handleLogin();
+
+  // 初回（ニックネーム未登録）はオンボーディングへ
+  if(!state.profile.name){
+    show("onboard");
+    const input = document.getElementById("nameInput");
+    if(input){
+      setTimeout(()=>input.focus(), 100);
+      input.addEventListener("keydown", (e)=>{ if(e.key==="Enter") submitName(); });
+    }
+    return;
+  }
+
   renderHome();
+  show("home");
 
   // アプリショートカット（manifest）からの起動: ?mode=random / review
   const mode = new URLSearchParams(location.search).get("mode");
