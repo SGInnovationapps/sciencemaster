@@ -397,7 +397,7 @@
       <p class="avbg" id="avBgLabel">背景：なし</p>
       <div class="avfig">
         <div class="l-head"><span id="avHead">　</span></div>
-        <div class="l-body"><span id="avBody">🙂</span></div>
+        <div class="l-body"><span id="avBody">🐶</span></div>
         <div class="l-hand"><span id="avHand">　</span> <span id="avPet">　</span></div>
       </div>
       <p class="avname"><b id="avName">りかマスター</b><span class="lv" id="avLv">Lv.1</span></p>
@@ -407,7 +407,7 @@
 
     <div class="slottabs" id="slotTabs">
       <button class="slottab active" data-slot="head" onclick="setSlot('head')">頭</button>
-      <button class="slottab" data-slot="body" onclick="setSlot('body')">体</button>
+      <button class="slottab" data-slot="body" onclick="setSlot('body')">どうぶつ</button>
       <button class="slottab" data-slot="hand" onclick="setSlot('hand')">手</button>
       <button class="slottab" data-slot="background" onclick="setSlot('background')">背景</button>
       <button class="slottab" data-slot="pet" onclick="setSlot('pet')">仲間</button>
@@ -623,14 +623,17 @@ function saveState(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)
             {answered:n}      … 累計解答数 n 問以上
    rarity : N / R / SR（表示用） */
 const ITEMS = [
-  // --- 体（土台。最低1つは常に装備される） ---
-  {slot:"body", id:"body_face",    emoji:"🙂", name:"さいしょ",       price:0,    unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_labcoat", emoji:"🥼", name:"白衣",           price:150,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_apron",   emoji:"🦺", name:"実験エプロン",   price:200,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_tshirt",  emoji:"👕", name:"理科部Tシャツ",  price:120,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_coat",    emoji:"🧥", name:"研究者コート",   price:450,  unlock:{level:4},       rarity:"R"},
-  {slot:"body", id:"body_kimono",  emoji:"🥋", name:"白衣の達人着",   price:700,  unlock:{level:7},       rarity:"R"},
-  {slot:"body", id:"body_tux",     emoji:"🤵", name:"授賞式の正装",   price:1200, unlock:{graduated:15}, rarity:"SR"},
+  // --- 動物アバター本体（土台。最低1つは常に装備される） ---
+  {slot:"body", id:"body_face",   emoji:"🐶", name:"いぬ",       price:0,    unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_cat",    emoji:"🐱", name:"ねこ",       price:120,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_rabbit", emoji:"🐰", name:"うさぎ",     price:120,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_bear",   emoji:"🐻", name:"くま",       price:150,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_panda",  emoji:"🐼", name:"パンダ",     price:200,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_fox",    emoji:"🦊", name:"きつね",     price:300,  unlock:{level:3},       rarity:"R"},
+  {slot:"body", id:"body_lion",   emoji:"🦁", name:"ライオン",   price:400,  unlock:{level:4},       rarity:"R"},
+  {slot:"body", id:"body_tiger",  emoji:"🐯", name:"とら",       price:450,  unlock:{answered:50},   rarity:"R"},
+  {slot:"body", id:"body_owl",    emoji:"🦉", name:"ふくろう",   price:700,  unlock:{level:7},       rarity:"R"},
+  {slot:"body", id:"body_unicorn",emoji:"🦄", name:"ユニコーン", price:1200, unlock:{graduated:15}, rarity:"SR"},
 
   // --- 頭 ---
   {slot:"head", id:"head_goggle",  emoji:"🥽", name:"ゴーグル",       price:120,  unlock:null,            rarity:"N"},
@@ -741,7 +744,7 @@ function emojiOf(id){ const it=itemById(id); return it?it.emoji:""; }
 function renderAvatarFigure(){
   const eq = state.avatar.equipped;
   document.getElementById("avHead").textContent = emojiOf(eq.head) || "　";
-  document.getElementById("avBody").textContent = emojiOf(eq.body) || "🙂";
+  document.getElementById("avBody").textContent = emojiOf(eq.body) || "🐶";
   document.getElementById("avHand").textContent = emojiOf(eq.hand) || "　";
   document.getElementById("avPet").textContent  = emojiOf(eq.pet)  || "　";
   const bg = itemById(eq.background);
@@ -821,7 +824,7 @@ function syncHomeAvatar(){
   const av = state.avatar;
   const c = document.getElementById("homeCoins"); if(c) c.textContent = av.coins;
   const h = document.getElementById("homeAvHead");
-  if(h) h.textContent = emojiOf(av.equipped.head) || emojiOf(av.equipped.body) || "🙂";
+  if(h) h.textContent = emojiOf(av.equipped.head) || emojiOf(av.equipped.body) || "🐶";
   const d = document.getElementById("homeAvDsc");
   if(d) d.textContent = `Lv.${av.level}・所持コイン${av.coins}`;
 }
