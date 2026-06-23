@@ -236,6 +236,45 @@
   .recap .k{font-size:12px;color:var(--muted);margin:0 0 4px;}
   .recap .q{font-size:14px;line-height:1.5;margin:0;}
 
+  /* ===== アバター ===== */
+  .coinpill{display:inline-flex;align-items:center;gap:5px;background:var(--amber-l);
+    color:var(--amber-d);font-size:14px;font-weight:600;padding:5px 12px;border-radius:20px;}
+  .coinpill i{font-size:16px;color:var(--amber);}
+  .avstage{background:var(--surface);border:.5px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:18px 16px 16px;text-align:center;margin-bottom:14px;}
+  .avbg{font-size:12px;color:var(--hint);margin:0 0 6px;}
+  .avfig{line-height:1;user-select:none;}
+  .avfig .l-head{font-size:34px;line-height:1.15;}
+  .avfig .l-body{font-size:50px;line-height:1.05;}
+  .avfig .l-hand{font-size:30px;line-height:1.2;}
+  .avname{font-size:14px;color:var(--muted);margin:10px 0 0;}
+  .avname b{color:var(--ink);font-weight:600;}
+  .avname .lv{color:var(--blue);font-weight:600;margin-left:4px;}
+  .avxp{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px auto 0;max-width:200px;}
+  .avxp i{display:block;height:100%;background:var(--blue-m);border-radius:3px;}
+  .avxptxt{font-size:11px;color:var(--hint);margin:5px 0 0;}
+  .slottabs{display:flex;gap:6px;background:var(--surface);border:.5px solid var(--line);
+    border-radius:var(--radius);padding:5px;margin-bottom:12px;box-shadow:var(--shadow);}
+  .slottab{flex:1;border-radius:9px;padding:9px 4px;font-size:13px;font-weight:600;color:var(--muted);
+    transition:background .15s,color .15s;}
+  .slottab.active{background:var(--blue-l);color:var(--blue-d);}
+  .itemgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .itemcard{background:var(--surface);border:.5px solid var(--line);border-radius:var(--radius-sm);
+    padding:12px 8px 10px;text-align:center;box-shadow:var(--shadow);transition:transform .1s;}
+  .itemcard:active{transform:scale(.97);}
+  .itemcard.equipped{border:2px solid var(--blue);padding:11px 7px 9px;}
+  .itemcard.locked{opacity:.65;}
+  .iemoji{font-size:30px;line-height:1;}
+  .iname{font-size:13px;font-weight:600;margin:6px 0 0;color:var(--ink);}
+  .istat{font-size:12px;margin:4px 0 0;display:flex;align-items:center;justify-content:center;gap:3px;}
+  .istat i{font-size:13px;}
+  .istat.eq{color:var(--blue);} .istat.own{color:var(--muted);}
+  .istat.buy{color:var(--amber-d);} .istat.lock{color:var(--hint);}
+  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);
+    color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:22px;z-index:50;
+    box-shadow:0 4px 16px rgba(0,0,0,.18);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
   .hidden{display:none!important;}
 </style>
 </head>
@@ -260,6 +299,10 @@
       autocomplete="off">
     <p id="nameHint" class="sub" style="min-height:18px;margin:0 0 14px;color:var(--red-d)"></p>
     <button class="btn green" onclick="submitName()">はじめる <i class="ti ti-arrow-right"></i></button>
+    <p style="font-size:11px;color:var(--hint);line-height:1.6;margin:14px 4px 0;display:flex;align-items:center;justify-content:center;gap:5px;">
+      <i class="ti ti-lock" style="font-size:13px"></i>
+      <span>データはこの端末内にのみ保存され、外部へ共有されません。</span>
+    </p>
   </section>
 
   <!-- ============ HOME ============ -->
@@ -327,6 +370,49 @@
 
     <p class="section-h">単元の習得度</p>
     <div class="card mastery" id="masteryList"></div>
+
+    <p class="section-h">そだてる</p>
+    <button class="mode" style="background:var(--amber-l)" onclick="openAvatar()">
+      <span class="avfig l-head" id="homeAvHead" style="font-size:26px;flex-shrink:0">🥽</span>
+      <div>
+        <p class="ttl" style="color:var(--amber-dd)">マイアバター</p>
+        <p class="dsc" style="color:var(--amber-d)" id="homeAvDsc">ポイントで装備を集めよう</p>
+      </div>
+      <span class="coinpill" style="margin-left:auto"><i class="ti ti-coin"></i><span id="homeCoins">0</span></span>
+    </button>
+  </section>
+
+  <!-- ============ AVATAR (dress-up) ============ -->
+  <section id="avatar" class="screen">
+    <div class="topbar">
+      <button class="navbtn" onclick="goHome()" aria-label="ホームに戻る"><span class="navarrow">‹</span> 戻る</button>
+      <div style="flex:1;text-align:center">
+        <p class="sub" style="display:flex;align-items:center;justify-content:center;gap:6px"><i class="ti ti-mood-smile" style="color:var(--amber-d)"></i>マイアバター</p>
+        <h1 style="font-size:17px">そだてる</h1>
+      </div>
+      <span class="coinpill" id="avCoins"><i class="ti ti-coin"></i><span id="avCoinsVal">0</span></span>
+    </div>
+
+    <div class="avstage">
+      <p class="avbg" id="avBgLabel">背景：なし</p>
+      <div class="avfig">
+        <div class="l-head"><span id="avHead">　</span></div>
+        <div class="l-body"><span id="avBody">🙂</span></div>
+        <div class="l-hand"><span id="avHand">　</span> <span id="avPet">　</span></div>
+      </div>
+      <p class="avname"><b id="avName">りかマスター</b><span class="lv" id="avLv">Lv.1</span></p>
+      <div class="avxp"><i id="avXpBar" style="width:0%"></i></div>
+      <p class="avxptxt" id="avXpTxt">EXP 0 / 100</p>
+    </div>
+
+    <div class="slottabs" id="slotTabs">
+      <button class="slottab active" data-slot="head" onclick="setSlot('head')">頭</button>
+      <button class="slottab" data-slot="body" onclick="setSlot('body')">体</button>
+      <button class="slottab" data-slot="hand" onclick="setSlot('hand')">手</button>
+      <button class="slottab" data-slot="background" onclick="setSlot('background')">背景</button>
+      <button class="slottab" data-slot="pet" onclick="setSlot('pet')">仲間</button>
+    </div>
+    <div class="itemgrid" id="itemGrid"></div>
   </section>
 
   <!-- ============ QUEST CATEGORIES (step 1) ============ -->
@@ -488,14 +574,258 @@ function defaultState(){
     logs:[],                          // {qid,correct,ts,ms}
     wrong:{},                         // qid -> {wrong_count, review_status}
     pointsToday:0, todayKey:null,
-    subject:"化学基礎"                // 選択中の科目タブ
+    subject:"化学基礎",               // 選択中の科目タブ
+    avatar:defaultAvatar()            // コイン・EXP・装備・所持品
+  };
+}
+function defaultAvatar(){
+  return {
+    coins:0,                          // 装備購入用（ポイントと1:1で貯まる）
+    exp:0, level:1,                   // アバター経験値・レベル
+    combo:0,                          // 連続正解カウンタ（ボーナス用）
+    equipped:{ head:null, body:"body_face", hand:null, background:null, pet:null },
+    owned:["body_face"],              // 所持アイテムID
+    slot:"head"                       // 着せ替え画面で選択中の部位
   };
 }
 function loadState(){
-  try{ const s = JSON.parse(localStorage.getItem(STORE_KEY)); return s||defaultState(); }
+  try{
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if(!s) return defaultState();
+    // 既存ユーザーの移行：avatar が無ければ補完
+    if(!s.avatar){
+      s.avatar = defaultAvatar();
+      // 過去の正解実績ぶんをコイン・EXPに換算して付与（救済）
+      const past = (s.logs||[]).filter(l=>l.correct).length * PTS_CORRECT;
+      s.avatar.coins = past;
+      addExpTo(s.avatar, past);
+    }
+    if(!s.avatar.equipped) s.avatar = defaultAvatar();
+    return s;
+  }
   catch(e){ return defaultState(); }
 }
 function saveState(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ===================================================================
+   アバター育成：アイテムマスタ・ポイント換算・着せ替え
+   =================================================================== */
+
+/* ---------- ③ アイテムマスタ ----------
+   slot   : head / body / hand / background / pet
+   id     : 一意キー（localStorage保存用）
+   emoji  : 表示絵文字
+   name   : 表示名
+   price  : 購入コスト（コイン）。0 は初期装備
+   unlock : 解放条件（満たすまで購入不可）。null は無条件
+            {level:n}         … アバターLv n 以上
+            {graduated:n}     … 復習卒業(review_status=2)が累計 n 問以上
+            {answered:n}      … 累計解答数 n 問以上
+   rarity : N / R / SR（表示用） */
+const ITEMS = [
+  // --- 体（土台。最低1つは常に装備される） ---
+  {slot:"body", id:"body_face",    emoji:"🙂", name:"さいしょ",       price:0,    unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_labcoat", emoji:"🥼", name:"白衣",           price:150,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_apron",   emoji:"🦺", name:"実験エプロン",   price:200,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_tshirt",  emoji:"👕", name:"理科部Tシャツ",  price:120,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_coat",    emoji:"🧥", name:"研究者コート",   price:450,  unlock:{level:4},       rarity:"R"},
+  {slot:"body", id:"body_kimono",  emoji:"🥋", name:"白衣の達人着",   price:700,  unlock:{level:7},       rarity:"R"},
+  {slot:"body", id:"body_tux",     emoji:"🤵", name:"授賞式の正装",   price:1200, unlock:{graduated:15}, rarity:"SR"},
+
+  // --- 頭 ---
+  {slot:"head", id:"head_goggle",  emoji:"🥽", name:"ゴーグル",       price:120,  unlock:null,            rarity:"N"},
+  {slot:"head", id:"head_micro",   emoji:"🔬", name:"顕微鏡ヘッド",   price:250,  unlock:null,            rarity:"N"},
+  {slot:"head", id:"head_cap",     emoji:"🧢", name:"研究キャップ",   price:100,  unlock:null,            rarity:"N"},
+  {slot:"head", id:"head_grad",    emoji:"🎓", name:"博士帽",         price:400,  unlock:{level:3},       rarity:"R"},
+  {slot:"head", id:"head_bulb",    emoji:"💡", name:"ひらめき電球",   price:550,  unlock:{answered:60},   rarity:"R"},
+  {slot:"head", id:"head_crown",   emoji:"👑", name:"ノーベル冠",     price:1500, unlock:{level:10},      rarity:"SR"},
+
+  // --- 手 ---
+  {slot:"hand", id:"hand_flask",   emoji:"⚗️", name:"フラスコ",       price:100,  unlock:null,            rarity:"N"},
+  {slot:"hand", id:"hand_tube",    emoji:"🧪", name:"試験管",         price:100,  unlock:null,            rarity:"N"},
+  {slot:"hand", id:"hand_magnet",  emoji:"🧲", name:"磁石",           price:130,  unlock:null,            rarity:"N"},
+  {slot:"hand", id:"hand_dna",     emoji:"🧬", name:"DNA模型",        price:300,  unlock:{answered:50},   rarity:"R"},
+  {slot:"hand", id:"hand_scope",   emoji:"🔭", name:"望遠鏡",         price:350,  unlock:{level:5},       rarity:"R"},
+  {slot:"hand", id:"hand_book",    emoji:"📕", name:"参考書",         price:280,  unlock:{level:4},       rarity:"R"},
+
+  // --- 背景 ---
+  {slot:"background", id:"bg_none", emoji:"",   name:"なし",           price:0,    unlock:null,            rarity:"N", label:"なし"},
+  {slot:"background", id:"bg_lab",  emoji:"🏫", name:"実験室",         price:500,  unlock:{level:5},       rarity:"R", label:"実験室"},
+  {slot:"background", id:"bg_cell", emoji:"🧫", name:"細胞の中",       price:500,  unlock:{level:5},       rarity:"R", label:"細胞の中"},
+  {slot:"background", id:"bg_mountain",emoji:"⛰️",name:"フィールド調査",price:350, unlock:{answered:40},   rarity:"R", label:"フィールド調査"},
+  {slot:"background", id:"bg_night",emoji:"🌃", name:"夜の自習室",     price:400,  unlock:{level:6},       rarity:"R", label:"夜の自習室"},
+  {slot:"background", id:"bg_space",emoji:"🌌", name:"分子の宇宙",     price:900,  unlock:{graduated:10}, rarity:"SR", label:"分子の宇宙"},
+
+  // --- 仲間（ペット） ---
+  {slot:"pet", id:"pet_ecoli",     emoji:"🦠", name:"大腸菌くん",     price:300,  unlock:null,            rarity:"N"},
+  {slot:"pet", id:"pet_mouse",     emoji:"🐭", name:"実験ねずみ",     price:250,  unlock:null,            rarity:"N"},
+  {slot:"pet", id:"pet_frog",      emoji:"🐸", name:"カエル先輩",     price:600,  unlock:{answered:80},   rarity:"R"},
+  {slot:"pet", id:"pet_cat",       emoji:"🐈", name:"研究室の看板猫", price:500,  unlock:{level:6},       rarity:"R"},
+  {slot:"pet", id:"pet_water",     emoji:"💧", name:"水分子ちゃん",   price:800,  unlock:{graduated:10}, rarity:"SR"}
+];
+const itemById = id => ITEMS.find(x=>x.id===id) || null;
+
+/* ---------- ② ポイント → コイン / EXP 換算 ----------
+   ・正解1問 = PTS_CORRECT(10) を「コイン」と「EXP」両方に加算
+   ・初見の問題に正解 = +5 ボーナス
+   ・3連続正解ごと = +5 ボーナス
+   ・復習卒業(review_status が PASS_TO_CLEAR 到達) = +30
+   awardForAnswer() は answer() から呼ぶ。直近の獲得内訳を返す。 */
+const EXP_PER_LEVEL = 100;            // 必要EXP = level * EXP_PER_LEVEL
+function expNeeded(level){ return level * EXP_PER_LEVEL; }
+
+function addExpTo(av, amount){
+  av.exp += amount;
+  while(av.exp >= expNeeded(av.level)){
+    av.exp -= expNeeded(av.level);
+    av.level++;
+  }
+}
+function award(amount){               // コインとEXPを同時に積む
+  if(amount<=0) return;
+  const av = state.avatar;
+  av.coins += amount;
+  addExpTo(av, amount);
+}
+
+/* 解答1問ぶんの報酬を計算・付与。{total, parts:[{label,pt}], levelUp} を返す */
+function awardForAnswer(q, isCorrect, firstTry, graduated){
+  const av = state.avatar;
+  const before = av.level;
+  const parts = [];
+  if(isCorrect){
+    parts.push({label:"正解", pt:PTS_CORRECT});
+    if(firstTry) parts.push({label:"初正解ボーナス", pt:5});
+    av.combo++;
+    if(av.combo % 3 === 0) parts.push({label:`${av.combo}連続`, pt:5});
+  } else {
+    av.combo = 0;
+  }
+  if(graduated) parts.push({label:"復習クリア", pt:30});
+
+  const total = parts.reduce((s,p)=>s+p.pt, 0);
+  award(total);
+  return { total, parts, levelUp: av.level>before, newLevel: av.level };
+}
+
+/* ---------- 解放条件の判定 ---------- */
+function graduatedCount(){ return Object.values(state.wrong).filter(w=>w.review_status>=PASS_TO_CLEAR).length; }
+function isUnlocked(item){
+  const u = item.unlock; if(!u) return true;
+  const av = state.avatar;
+  if(u.level    != null && av.level < u.level) return false;
+  if(u.graduated!= null && graduatedCount() < u.graduated) return false;
+  if(u.answered != null && state.logs.length < u.answered) return false;
+  return true;
+}
+function unlockLabel(item){
+  const u = item.unlock; if(!u) return "";
+  if(u.level)     return `Lv${u.level}で解放`;
+  if(u.graduated) return `復習${u.graduated}問クリアで解放`;
+  if(u.answered)  return `${u.answered}問解いて解放`;
+  return "";
+}
+
+/* ---------- ① 着せ替え画面 ---------- */
+function openAvatar(){ renderAvatar(); show("avatar"); }
+
+function setSlot(slot){
+  state.avatar.slot = slot;
+  saveState();
+  document.querySelectorAll("#slotTabs .slottab").forEach(t=>t.classList.toggle("active", t.dataset.slot===slot));
+  renderItemGrid();
+}
+
+function emojiOf(id){ const it=itemById(id); return it?it.emoji:""; }
+
+function renderAvatarFigure(){
+  const eq = state.avatar.equipped;
+  document.getElementById("avHead").textContent = emojiOf(eq.head) || "　";
+  document.getElementById("avBody").textContent = emojiOf(eq.body) || "🙂";
+  document.getElementById("avHand").textContent = emojiOf(eq.hand) || "　";
+  document.getElementById("avPet").textContent  = emojiOf(eq.pet)  || "　";
+  const bg = itemById(eq.background);
+  document.getElementById("avBgLabel").textContent = "背景：" + (bg && bg.id!=="bg_none" ? bg.name : "なし");
+}
+
+function renderAvatar(){
+  const av = state.avatar;
+  document.getElementById("avCoinsVal").textContent = av.coins;
+  document.getElementById("avName").textContent = state.profile.name || "りかマスター";
+  document.getElementById("avLv").textContent = "Lv." + av.level;
+  const need = expNeeded(av.level);
+  document.getElementById("avXpBar").style.width = Math.round(av.exp/need*100) + "%";
+  document.getElementById("avXpTxt").textContent = `EXP ${av.exp} / ${need}`;
+  renderAvatarFigure();
+  // タブの選択状態を復元
+  const slot = av.slot || "head";
+  document.querySelectorAll("#slotTabs .slottab").forEach(t=>t.classList.toggle("active", t.dataset.slot===slot));
+  renderItemGrid();
+}
+
+function renderItemGrid(){
+  const av = state.avatar;
+  const slot = av.slot || "head";
+  const grid = document.getElementById("itemGrid");
+  grid.innerHTML = "";
+  ITEMS.filter(it=>it.slot===slot).forEach(it=>{
+    const owned = av.owned.includes(it.id);
+    const equipped = av.equipped[slot] === it.id;
+    const unlocked = isUnlocked(it);
+    const card = document.createElement("button");
+    card.className = "itemcard" + (equipped?" equipped":"") + (!owned && !unlocked ? " locked":"");
+
+    let stat;
+    if(equipped)        stat = `<p class="istat eq"><i class="ti ti-check"></i>装備中</p>`;
+    else if(owned)      stat = `<p class="istat own">タップで装備</p>`;
+    else if(!unlocked)  stat = `<p class="istat lock"><i class="ti ti-lock"></i>${unlockLabel(it)}</p>`;
+    else                stat = `<p class="istat buy"><i class="ti ti-coin"></i>${it.price}</p>`;
+
+    const face = it.emoji || (it.label || "—");
+    card.innerHTML = `<div class="iemoji">${face}</div><p class="iname">${it.name}</p>${stat}`;
+    card.onclick = ()=>onItemTap(it);
+    grid.appendChild(card);
+  });
+}
+
+function onItemTap(it){
+  const av = state.avatar;
+  const owned = av.owned.includes(it.id);
+  if(!owned){
+    if(!isUnlocked(it)){ toast(unlockLabel(it)); return; }
+    if(av.coins < it.price){ toast(`コインが ${it.price - av.coins} 枚たりません`); return; }
+    av.coins -= it.price;
+    av.owned.push(it.id);
+    toast(`「${it.name}」を購入しました`);
+  }
+  // 装備（背景の「なし」も装備として扱う）
+  av.equipped[it.slot] = it.id;
+  saveState();
+  renderAvatar();
+  syncHomeAvatar();
+}
+
+/* ---------- トースト ---------- */
+let toastTimer=null;
+function toast(msg){
+  let el = document.getElementById("toast");
+  if(!el){ el=document.createElement("div"); el.id="toast"; el.className="toast"; document.body.appendChild(el); }
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 1600);
+}
+
+/* ホーム側のアバター表示（コイン・顔絵文字・説明）を同期 */
+function syncHomeAvatar(){
+  const av = state.avatar;
+  const c = document.getElementById("homeCoins"); if(c) c.textContent = av.coins;
+  const h = document.getElementById("homeAvHead");
+  if(h) h.textContent = emojiOf(av.equipped.head) || emojiOf(av.equipped.body) || "🙂";
+  const d = document.getElementById("homeAvDsc");
+  if(d) d.textContent = `Lv.${av.level}・所持コイン${av.coins}`;
+}
+
 
 function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
 function dayDiff(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
@@ -605,6 +935,8 @@ function renderHome(){
     ml.appendChild(div);
   });
   if(!rows.length) ml.innerHTML = `<p class="sub" style="margin:0">この科目の問題がありません。</p>`;
+
+  syncHomeAvatar();
 }
 
 /* ---------- 科目タブ切り替え ---------- */
@@ -813,28 +1145,39 @@ function answer(q, picked, correctText, btnEl){
     else b.classList.add("dim");
   });
 
-  // ログ記録
+  // ログ記録（初見判定は記録の前に）
   const t=todayStr();
+  const firstTry = !state.logs.some(l=>l.qid===q.id);
   state.logs.push({qid:q.id, correct:isCorrect, ts:t, ms});
 
-  // 復習ステータス更新
+  // 復習ステータス更新（卒業判定もここで）
+  let graduated = false;
   if(!isCorrect){
     if(!state.wrong[q.id]) state.wrong[q.id]={wrong_count:0,review_status:0};
     state.wrong[q.id].wrong_count++;
     state.wrong[q.id].review_status=0; // 誤答でリセット
   } else if(state.wrong[q.id] && state.wrong[q.id].review_status < PASS_TO_CLEAR){
     state.wrong[q.id].review_status++;
+    if(state.wrong[q.id].review_status >= PASS_TO_CLEAR) graduated = true;
   }
+
+  // ② コイン・EXP の付与（連続正解・初正解・復習卒業ボーナス込み）
+  const reward = awardForAnswer(q, isCorrect, firstTry, graduated);
 
   // フィードバック描画
   const fb = document.getElementById("qFeedback");
   if(isCorrect){
     session.correct++; session.points+=PTS_CORRECT;
     state.pointsToday+=PTS_CORRECT;
+    const bonusTxt = reward.parts.length>1
+      ? ` <span style="opacity:.85;font-size:11px">(${reward.parts.map(p=>p.label).join("+")})</span>` : "";
     fb.innerHTML =
       `<div class="feedback ok"><div class="fh"><i class="ti ti-circle-check"></i>`+
-      `<span class="ft">正解！</span><span class="fp">+${PTS_CORRECT}pt</span></div>`+
-      `<p>${q.explanation}</p></div>`;
+      `<span class="ft">正解！</span><span class="fp"><i class="ti ti-coin" style="font-size:14px;vertical-align:-2px"></i> +${reward.total}</span></div>`+
+      `<p>${q.explanation}</p>`+
+      (bonusTxt?`<p style="margin:6px 0 0;font-size:12px;color:var(--amber-d)">獲得コイン内訳${bonusTxt}</p>`:``)+
+      `</div>`;
+    if(reward.levelUp) setTimeout(()=>toast(`レベルアップ！ Lv.${reward.newLevel} になりました`), 400);
   } else {
     fb.innerHTML =
       `<div class="feedback ng"><div class="fh"><i class="ti ti-bulb"></i>`+
