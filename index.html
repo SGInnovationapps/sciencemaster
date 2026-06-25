@@ -70,8 +70,25 @@
     color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;
     transition:background .15s,color .15s;}
   .subjtab i{font-size:17px;}
-  .subjtab.chem.active{background:var(--blue-l);color:var(--blue-d);}
-  .subjtab.bio.active{background:var(--green-l);color:var(--green-d);}
+  .subjtab.chem.active{background:var(--blue);color:#fff;box-shadow:0 1px 3px rgba(24,95,165,.35);}
+  .subjtab.bio.active{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(29,158,117,.35);}
+
+  /* ===== 科目テーマ（画面全体で化学=青／生物=緑をはっきり） ===== */
+  #app{--subj:var(--blue); --subj-d:var(--blue-d); --subj-dd:var(--blue-dd);
+       --subj-l:var(--blue-l); --subj-m:var(--blue-m);}
+  #app[data-subject="生物基礎"]{--subj:var(--green); --subj-d:var(--green-d); --subj-dd:var(--green-dd);
+       --subj-l:var(--green-l); --subj-m:var(--green-m);}
+  /* 画面上部の科目カラーバンド */
+  #app::before{content:"";position:fixed;top:0;left:0;right:0;height:6px;background:var(--subj);
+    z-index:30;transition:background .25s;}
+  /* 背景をうっすら科目色に */
+  #app[data-subject]{background:var(--subj-l);}
+  /* 科目ラベル（ホーム上部に表示する帯） */
+  .subjbanner{display:flex;align-items:center;gap:8px;background:var(--subj);color:#fff;
+    border-radius:var(--radius);padding:10px 16px;margin-bottom:12px;font-weight:600;font-size:15px;
+    box-shadow:var(--shadow);transition:background .25s;}
+  .subjbanner i{font-size:20px;}
+  .subjbanner .sw{margin-left:auto;font-size:12px;font-weight:600;opacity:.9;}
 
   .card{background:var(--surface);border:.5px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow);}
@@ -243,10 +260,24 @@
   .avstage{background:var(--surface);border:.5px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow);padding:18px 16px 16px;text-align:center;margin-bottom:14px;}
   .avbg{font-size:12px;color:var(--hint);margin:0 0 6px;}
-  .avfig{line-height:1;user-select:none;}
-  .avfig .l-head{font-size:34px;line-height:1.15;}
-  .avfig .l-body{font-size:50px;line-height:1.05;}
-  .avfig .l-hand{font-size:30px;line-height:1.2;}
+  .avcompo{position:relative;width:140px;height:140px;margin:4px auto 0;user-select:none;}
+  /* 各レイヤーは140×140全面に重ねる。SVG内部で位置が決まっている前提 */
+  .avcompo .layer{position:absolute;inset:0;}
+  .avcompo .layer img{width:100%;height:100%;display:block;object-fit:contain;}
+  .avcompo .bg{z-index:0;}
+  .avcompo .bg img{opacity:.45;}
+  .avcompo .body{z-index:1;}
+  .avcompo .hand{z-index:2;}
+  .avcompo .pet{z-index:2;}
+  .avcompo .head{z-index:3;}
+  .avcompo .layer:empty{display:none;}
+  /* 絵文字フォールバック時のみ、旧来の位置で表示 */
+  .emoji-fallback{position:absolute;line-height:1;}
+  .bg  .emoji-fallback{left:50%;top:50%;transform:translate(-50%,-50%);font-size:120px;opacity:.18;}
+  .body .emoji-fallback{left:50%;top:54%;transform:translate(-50%,-50%);font-size:70px;}
+  .head .emoji-fallback{left:50%;top:14%;transform:translate(-50%,-50%);font-size:42px;}
+  .hand .emoji-fallback{right:6px;bottom:8px;font-size:38px;}
+  .pet  .emoji-fallback{left:6px;bottom:8px;font-size:34px;}
   .avname{font-size:14px;color:var(--muted);margin:10px 0 0;}
   .avname b{color:var(--ink);font-weight:600;}
   .avname .lv{color:var(--blue);font-weight:600;margin-left:4px;}
@@ -265,6 +296,7 @@
   .itemcard.equipped{border:2px solid var(--blue);padding:11px 7px 9px;}
   .itemcard.locked{opacity:.65;}
   .iemoji{font-size:30px;line-height:1;}
+  .ithumb{width:46px;height:46px;object-fit:contain;display:block;margin:0 auto;}
   .iname{font-size:13px;font-weight:600;margin:6px 0 0;color:var(--ink);}
   .istat{font-size:12px;margin:4px 0 0;display:flex;align-items:center;justify-content:center;gap:3px;}
   .istat i{font-size:13px;}
@@ -346,6 +378,11 @@
       </div>
     </div>
 
+    <div class="subjbanner" id="subjBanner">
+      <i class="ti ti-flask" id="subjBannerIcon"></i>
+      <span id="subjBannerName">化学基礎</span>
+      <span class="sw">タブで切り替え ↓</span>
+    </div>
     <div class="subjtabs" id="subjTabs">
       <button class="subjtab chem active" data-subj="化学基礎" onclick="setSubject('化学基礎')"><i class="ti ti-flask"></i>化学基礎</button>
       <button class="subjtab bio" data-subj="生物基礎" onclick="setSubject('生物基礎')"><i class="ti ti-dna"></i>生物基礎</button>
@@ -373,7 +410,7 @@
 
     <p class="section-h">そだてる</p>
     <button class="mode" style="background:var(--amber-l)" onclick="openAvatar()">
-      <span class="avfig l-head" id="homeAvHead" style="font-size:26px;flex-shrink:0">🥽</span>
+      <span id="homeAvHead" style="font-size:26px;line-height:1;flex-shrink:0">🐶</span>
       <div>
         <p class="ttl" style="color:var(--amber-dd)">マイアバター</p>
         <p class="dsc" style="color:var(--amber-d)" id="homeAvDsc">ポイントで装備を集めよう</p>
@@ -395,10 +432,12 @@
 
     <div class="avstage">
       <p class="avbg" id="avBgLabel">背景：なし</p>
-      <div class="avfig">
-        <div class="l-head"><span id="avHead">　</span></div>
-        <div class="l-body"><span id="avBody">🐶</span></div>
-        <div class="l-hand"><span id="avHand">　</span> <span id="avPet">　</span></div>
+      <div class="avcompo">
+        <span class="layer bg"   id="avBg"></span>
+        <span class="layer body" id="avBody"></span>
+        <span class="layer head" id="avHead"></span>
+        <span class="layer hand" id="avHand"></span>
+        <span class="layer pet"  id="avPet"></span>
       </div>
       <p class="avname"><b id="avName">りかマスター</b><span class="lv" id="avLv">Lv.1</span></p>
       <div class="avxp"><i id="avXpBar" style="width:0%"></i></div>
@@ -625,15 +664,10 @@ function saveState(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)
 const ITEMS = [
   // --- 動物アバター本体（土台。最低1つは常に装備される） ---
   {slot:"body", id:"body_face",   emoji:"🐶", name:"いぬ",       price:0,    unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_cat",    emoji:"🐱", name:"ねこ",       price:120,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_rabbit", emoji:"🐰", name:"うさぎ",     price:120,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_bear",   emoji:"🐻", name:"くま",       price:150,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_panda",  emoji:"🐼", name:"パンダ",     price:200,  unlock:null,            rarity:"N"},
-  {slot:"body", id:"body_fox",    emoji:"🦊", name:"きつね",     price:300,  unlock:{level:3},       rarity:"R"},
-  {slot:"body", id:"body_lion",   emoji:"🦁", name:"ライオン",   price:400,  unlock:{level:4},       rarity:"R"},
-  {slot:"body", id:"body_tiger",  emoji:"🐯", name:"とら",       price:450,  unlock:{answered:50},   rarity:"R"},
-  {slot:"body", id:"body_owl",    emoji:"🦉", name:"ふくろう",   price:700,  unlock:{level:7},       rarity:"R"},
-  {slot:"body", id:"body_unicorn",emoji:"🦄", name:"ユニコーン", price:1200, unlock:{graduated:15}, rarity:"SR"},
+  {slot:"body", id:"body_cat",    emoji:"🐱", name:"ねこ",       price:150,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_rabbit", emoji:"🐰", name:"うさぎ",     price:200,  unlock:null,            rarity:"N"},
+  {slot:"body", id:"body_panda",  emoji:"🐼", name:"パンダ",     price:400,  unlock:{level:4},       rarity:"R"},
+  {slot:"body", id:"body_fox",    emoji:"🦊", name:"きつね",     price:700,  unlock:{level:7},       rarity:"R"},
 
   // --- 頭 ---
   {slot:"head", id:"head_goggle",  emoji:"🥽", name:"ゴーグル",       price:120,  unlock:null,            rarity:"N"},
@@ -741,13 +775,45 @@ function setSlot(slot){
 
 function emojiOf(id){ const it=itemById(id); return it?it.emoji:""; }
 
+/* ---------- SVG画像アセット ----------
+   ファイルは assets/avatar/{slotDir}/{id}.svg に配置（idと完全一致）。
+   背景フォルダだけ "bg"。背景なし(bg_none)は画像なし。
+   画像が無い/読めない場合は絵文字にフォールバックする。 */
+const ASSET_BASE = "assets/avatar";
+function slotDir(slot){ return slot==="background" ? "bg" : slot; }
+function svgPathOf(id){
+  const it = itemById(id);
+  if(!it) return "";
+  if(it.id==="bg_none") return "";
+  return `${ASSET_BASE}/${slotDir(it.slot)}/${it.id}.svg`;
+}
+/* レイヤー要素に画像を描画。読み込み失敗時は絵文字にフォールバック */
+function paintLayer(elId, itemId, fallbackEmoji){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  const it = itemById(itemId);
+  const path = itemId ? svgPathOf(itemId) : "";
+  if(!path){
+    // 画像なし（未装備 or 背景なし）→ フォールバック絵文字 or 空
+    el.innerHTML = fallbackEmoji ? `<span class="emoji-fallback">${fallbackEmoji}</span>` : "";
+    return;
+  }
+  const fb = (it && it.emoji) ? it.emoji : (fallbackEmoji||"");
+  el.innerHTML =
+    `<img src="${path}" alt="${it?it.name:''}" `+
+    `onerror="this.parentNode.innerHTML='<span class=&quot;emoji-fallback&quot;>${fb}</span>'">`;
+}
+
 function renderAvatarFigure(){
   const eq = state.avatar.equipped;
-  document.getElementById("avHead").textContent = emojiOf(eq.head) || "　";
-  document.getElementById("avBody").textContent = emojiOf(eq.body) || "🐶";
-  document.getElementById("avHand").textContent = emojiOf(eq.hand) || "　";
-  document.getElementById("avPet").textContent  = emojiOf(eq.pet)  || "　";
+  // 削除された動物を装備中だった既存ユーザーは いぬ に戻す
+  if(!itemById(eq.body)){ eq.body = "body_face"; saveState(); }
+  paintLayer("avBody", eq.body || "body_face", "🐶");
+  paintLayer("avHead", eq.head, "");
+  paintLayer("avHand", eq.hand, "");
+  paintLayer("avPet",  eq.pet,  "");
   const bg = itemById(eq.background);
+  paintLayer("avBg", (bg && bg.id!=="bg_none") ? eq.background : null, "");
   document.getElementById("avBgLabel").textContent = "背景：" + (bg && bg.id!=="bg_none" ? bg.name : "なし");
 }
 
@@ -784,8 +850,12 @@ function renderItemGrid(){
     else if(!unlocked)  stat = `<p class="istat lock"><i class="ti ti-lock"></i>${unlockLabel(it)}</p>`;
     else                stat = `<p class="istat buy"><i class="ti ti-coin"></i>${it.price}</p>`;
 
-    const face = it.emoji || (it.label || "—");
-    card.innerHTML = `<div class="iemoji">${face}</div><p class="iname">${it.name}</p>${stat}`;
+    const path = svgPathOf(it.id);
+    const fb = it.emoji || (it.label || "—");
+    const face = path
+      ? `<img class="ithumb" src="${path}" alt="${it.name}" onerror="this.outerHTML='<div class=&quot;iemoji&quot;>${fb}</div>'">`
+      : `<div class="iemoji">${fb}</div>`;
+    card.innerHTML = `${face}<p class="iname">${it.name}</p>${stat}`;
     card.onclick = ()=>onItemTap(it);
     grid.appendChild(card);
   });
@@ -819,12 +889,19 @@ function toast(msg){
   toastTimer = setTimeout(()=>el.classList.remove("show"), 1600);
 }
 
-/* ホーム側のアバター表示（コイン・顔絵文字・説明）を同期 */
+/* ホーム側のアバター表示（コイン・顔・説明）を同期 */
 function syncHomeAvatar(){
   const av = state.avatar;
   const c = document.getElementById("homeCoins"); if(c) c.textContent = av.coins;
   const h = document.getElementById("homeAvHead");
-  if(h) h.textContent = emojiOf(av.equipped.head) || emojiOf(av.equipped.body) || "🐶";
+  if(h){
+    const bodyId = av.equipped.body || "body_face";
+    const path = svgPathOf(bodyId);
+    const fb = emojiOf(bodyId) || "🐶";
+    h.innerHTML = path
+      ? `<img src="${path}" alt="" style="width:34px;height:34px;object-fit:contain;display:block" onerror="this.outerHTML='${fb}'">`
+      : fb;
+  }
   const d = document.getElementById("homeAvDsc");
   if(d) d.textContent = `Lv.${av.level}・所持コイン${av.coins}`;
 }
@@ -902,13 +979,16 @@ function renderHome(){
   const acc = accuracy();
   document.getElementById("accVal").textContent = acc;
   const C = 2*Math.PI*40;
-  document.getElementById("ringArc").setAttribute("stroke-dashoffset", (C*(1-acc/100)).toFixed(1));
+  const arc = document.getElementById("ringArc");
+  arc.setAttribute("stroke-dashoffset", (C*(1-acc/100)).toFixed(1));
+  arc.setAttribute("stroke", state.subject==="生物基礎" ? "var(--green)" : "var(--blue)");
 
   document.getElementById("totalCount").textContent = state.logs.length;
   document.getElementById("todayCount").textContent = todayCount();
 
-  // subject tabs active state
+  // subject tabs active state + 画面テーマ
   if(!state.subject) state.subject = "化学基礎";
+  applySubjectTheme(state.subject);
   document.querySelectorAll("#subjTabs .subjtab").forEach(t=>{
     t.classList.toggle("active", t.dataset.subj===state.subject);
   });
@@ -942,10 +1022,22 @@ function renderHome(){
   syncHomeAvatar();
 }
 
+/* ---------- 科目テーマ適用（画面全体の色分け） ---------- */
+function applySubjectTheme(subj){
+  const app = document.getElementById("app");
+  if(app) app.setAttribute("data-subject", subj);
+  const isChem = subj==="化学基礎";
+  const nm = document.getElementById("subjBannerName");
+  const ic = document.getElementById("subjBannerIcon");
+  if(nm) nm.textContent = subj;
+  if(ic) ic.className = "ti " + (isChem ? "ti-flask" : "ti-dna");
+}
+
 /* ---------- 科目タブ切り替え ---------- */
 function setSubject(subj){
   state.subject = subj;
   saveState();
+  applySubjectTheme(subj);
   renderHome();
 }
 
