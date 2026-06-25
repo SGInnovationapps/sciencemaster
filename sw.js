@@ -3,7 +3,7 @@
    - アイコン等の静的アセットは cache-first
    - 更新時は VERSION を上げる。新SWは即時有効化し、ページ側で自動リロードする。 */
 
-const VERSION = "rikakiso-v9";          // ★更新のたびに上げる
+const VERSION = "rikakiso-v12";          // ★更新のたびに上げる
 const APP_CACHE = `${VERSION}-app`;
 const DATA_CACHE = `${VERSION}-data`;
 
@@ -19,10 +19,22 @@ const APP_SHELL = [
   "./offline.html"
 ];
 
+// アバター・装備のSVG（idと一致。背景フォルダは bg）
+const AVATAR_ASSETS = [
+  "body/body_face","body/body_cat","body/body_rabbit","body/body_panda","body/body_fox",
+  "head/head_goggle","head/head_micro","head/head_cap","head/head_grad","head/head_bulb","head/head_crown",
+  "hand/hand_flask","hand/hand_tube","hand/hand_magnet","hand/hand_dna","hand/hand_scope","hand/hand_book",
+  "pet/pet_ecoli","pet/pet_mouse","pet/pet_frog","pet/pet_cat","pet/pet_water",
+  "bg/bg_lab","bg/bg_cell","bg/bg_mountain","bg/bg_night","bg/bg_space"
+].map((p) => `./assets/avatar/${p}.svg`);
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(APP_CACHE)
       .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => caches.open(APP_CACHE))
+      // SVGは1枚失敗しても全体を止めない（個別add＋allSettled）
+      .then((cache) => Promise.allSettled(AVATAR_ASSETS.map((u) => cache.add(u))))
       .then(() => self.skipWaiting())   // 待機せず即インストール
   );
 });
